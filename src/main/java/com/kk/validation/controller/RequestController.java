@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RequestController {
 
     MailSenderSrv mailService;
+
     @GetMapping("/test")
     public ResponseEntity<String> tes(){
         return ResponseEntity.ok("OK");
