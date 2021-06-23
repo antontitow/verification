@@ -10,13 +10,11 @@ import org.springframework.stereotype.Service;
 public class MailSenderSrv {
     @Autowired
     private JavaMailSenderImpl mailSender;
-//    @Autowired
-//    private SimpleMailMessage simpleMailMessage;
 
     public void Send(String text){
-//        SimpleMailMessage msg = new SimpleMailMessage(this.simpleMailMessage);
-        SimpleMailMessage msg = new SimpleMailMessage(new SimpleMailMessage());
+        SimpleMailMessage msg = new SimpleMailMessage();
         msg.setText("hello: "+text);
+        msg.setFrom("antontitow@bk.ru");
         msg.setTo(text);
         try {
             this.mailSender.send(msg);
