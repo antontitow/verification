@@ -59,7 +59,7 @@ public class RequestController {
 
 
     //через JSON
-    @PostMapping(path = "/generate", consumes = {MediaType.APPLICATION_XML_VALUE}, produces = {MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(path = "/generate", consumes = "application/json", produces = "application/json")
     public ResponseEntity<String> generationToken2(@RequestBody GenerationRequest generationRequest){
 
         try {
