@@ -55,9 +55,6 @@ public class RequestController {
 //            return new ResponseEntity("Error type of command",HttpStatus.BAD_REQUEST);
 //        }
 //    }
-
-
-
     //через JSON
     @PostMapping(path = "/generate", consumes = "application/json", produces = "application/json")
     public ResponseEntity<String> generationToken2(@RequestBody GenerationRequest generationRequest){

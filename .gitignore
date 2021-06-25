@@ -37,4 +37,6 @@ out/
 .vscode/
 
 ###TEST CONFIG###
-*/application-test.properties
+/src/main/resources/application-test.properties
+/src/main/resources/data.sql
+/validation.db
