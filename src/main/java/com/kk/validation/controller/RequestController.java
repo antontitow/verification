@@ -63,7 +63,6 @@ public class RequestController {
     public ResponseEntity<String> generationToken2(@RequestBody GenerationRequest generationRequest){
         try {
             //Проверка имейла
-
             // Генерация токена/кода
             String token = generation.token.get(generationRequest.getTokenType());
             return new ResponseEntity(generation.token.get(generationRequest.getTokenType()), HttpStatus.ACCEPTED);
