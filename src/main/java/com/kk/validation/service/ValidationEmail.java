@@ -4,6 +4,8 @@ import com.kk.validation.exceptions.ExceptionTypeToken;
 import com.kk.validation.exceptions.ExceptionNotValidEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
 import java.util.regex.Pattern;
 
 @Service
@@ -74,8 +76,8 @@ public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailSe
             validationEmail.sqLite.saveMail(validationEmail.getEmail(),validationEmail.getTokenOrCode());
             return this;
         }
-        public Builder sendMail(){
-            if (validationEmail.isToken) {validationEmail.mailService.Send( validationEmail.getEmail(),"Ghbdfdfd");}
+        public Builder sendMail() {
+            if (validationEmail.isToken) {validationEmail.mailService.Send( validationEmail.getEmail(), validationEmail.getTokenOrCode(), "Активация имейла");}
             return this;
         }
         public ValidationEmail Build(){

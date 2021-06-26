@@ -2,10 +2,18 @@ package com.kk.validation.service;
 
 import com.kk.validation.config.MailConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class MailSenderSrv {
@@ -18,15 +26,34 @@ public class MailSenderSrv {
         this.mailConfig = mailConfig;
     }
 
-    public void Send(String to, String text){
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setText("hello: "+text);
-        msg.setFrom(mailConfig.getUsername());
-        msg.setTo(to);
+    public void Send(String to, String token, String text) {
+        // через SimpleMailMessage
+//        SimpleMailMessage msg = new SimpleMailMessage();
+//        msg.setText("hello: "+text);
+//        msg.setFrom(mailConfig.getUsername());
+//        msg.setTo(to);
+//        try {
+//            this.mailSender.send(msg);
+//        }catch (MailException ex){
+//            System.out.println(ex.getMessage());
+//        }
+        // через MimeMessage
+        MimeMessage message = mailSender.createMimeMessage();
         try {
-            this.mailSender.send(msg);
-        }catch (MailException ex){
-            System.out.println(ex.getMessage());
+            MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+            helper.setFrom(mailConfig.getUsername());
+            helper.setTo(to);
+            helper.setSubject(text);
+            helper.setText("<html><body>" +
+                    "Активируйте имейл по " +
+                    "<a href = \"localhost\\active\\"+token+"\" >ссылке </a></br>"+
+                     "<img src='cid:identity'></body></html>",true);
+            //FileSystemResource res = new FileSystemResource(new File("C:\\Temp\\Identity-vs-Verification.jpeg"));
+            helper.addInline("identity", new ClassPathResource("img/Identity-vs-Verification.jpeg"));
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
+
     }
 }
