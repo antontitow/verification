@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 @Service
@@ -46,7 +45,7 @@ public class MailSenderSrv {
             helper.setSubject(text);
             helper.setText("<html><body>" +
                     "Активируйте имейл по " +
-                    "<a href = \"http://localhost/active/"+email + "/"+ token+"\" >ссылке </a></br>"+
+                    "<a href = \"http://localhost/activation/"+email + "/"+ token+"\" >ссылке </a></br></br>"+
                      "<img src='cid:identity'></body></html>",true);
             //FileSystemResource res = new FileSystemResource(new File("C:\\Temp\\Identity-vs-Verification.jpeg"));
             helper.addInline("identity", new ClassPathResource("img/Identity-vs-Verification.jpeg"));
