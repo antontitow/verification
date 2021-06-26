@@ -18,11 +18,11 @@ public class MailSenderSrv {
         this.mailConfig = mailConfig;
     }
 
-    public void Send(String text){
+    public void Send(String to, String text){
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setText("hello: "+text);
         msg.setFrom(mailConfig.getUsername());
-        msg.setTo(text);
+        msg.setTo(to);
         try {
             this.mailSender.send(msg);
         }catch (MailException ex){

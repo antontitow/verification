@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 public class SQLiteSrv {
     @Autowired
     VerificationRepo verificationEntity;
-    public boolean saveMail(String mail){
-        verificationEntity.save(new Verification(mail));
+    public boolean saveMail(String mail,String tokenOrCode){
+        verificationEntity.save(new Verification(mail,tokenOrCode));
         return true;
     }
 }

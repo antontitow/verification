@@ -16,7 +16,16 @@ public class Verification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String activation_code;
+
+    public String getTokenOrCode() {
+        return tokenOrCode;
+    }
+
+    public void setTokenOrCode(String tokenOrCode) {
+        this.tokenOrCode = tokenOrCode;
+    }
+
+    private String tokenOrCode;
     private boolean active;
 
     private String email;
@@ -25,7 +34,8 @@ public class Verification {
 
 
     public Verification(){}
-    public Verification(String email){
+    public Verification(String email,String tokenOrCode){
+        this.tokenOrCode = tokenOrCode;
         this.email = email;
         Date dateCreate = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formatDate);

@@ -2,9 +2,7 @@ package com.kk.validation.service;
 
 import com.kk.validation.config.TokenGenConfig;
 import com.kk.validation.domain.GeneratedToken;
-import com.kk.validation.exceptions.ExceptionTypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;

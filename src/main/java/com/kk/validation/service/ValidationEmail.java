@@ -8,32 +8,35 @@ import java.util.regex.Pattern;
 
 @Service
 public class ValidationEmail {
-//    @Autowired
-//    private final MailSenderSrv mailService;
-//    private final SQLiteSrv sqLite;
 
+    private final TokenGen generation;
+    private final SQLiteSrv sqLite;
+    private final MailSenderSrv mailService;
 
-private final TokenGen generation;
 @Autowired
-public ValidationEmail(TokenGen generation){
+public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailService){
     this.generation = generation;
+    this.sqLite = sqLite;
+    this.mailService = mailService;
 }
 
+    public String getEmail() {
+        return email;
+    }
 
-
-//    @Autowired
-//    public ValidationEmail(TokenGen generation, SQLiteSrv sqLite, MailSenderSrv mailService) {
-//        this.generation = generation;
-//        this.sqLite = sqLite;
-//        this.mailService = mailService;
-//    }
-
-
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     private String email;
     private boolean emailValid;
     private boolean emailSend;
     private boolean isToken;
+
+    public void setTokenOrCode(String tokenOrCode) {
+        this.tokenOrCode = tokenOrCode;
+    }
+
     private String tokenOrCode;
     private boolean tokenOrCodeSave;
 
@@ -41,11 +44,10 @@ public ValidationEmail(TokenGen generation){
         return tokenOrCode;
     }
 
-
     public class Builder {
-        private ValidationEmail validationEmail;
+        private final ValidationEmail validationEmail;
 
-        public Builder(){validationEmail = new ValidationEmail(generation);}
+        public Builder(){validationEmail = new ValidationEmail(generation,sqLite,mailService);}
 
         public Builder setEmail(String email){ validationEmail.email = email; return this;}
 
@@ -66,6 +68,14 @@ public ValidationEmail(TokenGen generation){
 
         public Builder generateTokenOrCode(){
             validationEmail.tokenOrCode = generation.token.get(validationEmail.isToken);
+            return this;
+        }
+        public Builder saveEmailAndTokenCode(){
+            validationEmail.sqLite.saveMail(validationEmail.getEmail(),validationEmail.getTokenOrCode());
+            return this;
+        }
+        public Builder sendMail(){
+            if (validationEmail.isToken) {validationEmail.mailService.Send( validationEmail.getEmail(),"Ghbdfdfd");}
             return this;
         }
         public ValidationEmail Build(){
