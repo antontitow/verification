@@ -26,7 +26,7 @@ public class MailSenderSrv {
         this.mailConfig = mailConfig;
     }
 
-    public void Send(String to, String token, String text) {
+    public void Send(String to, String email, String token, String text) {
         // через SimpleMailMessage
 //        SimpleMailMessage msg = new SimpleMailMessage();
 //        msg.setText("hello: "+text);
@@ -46,7 +46,7 @@ public class MailSenderSrv {
             helper.setSubject(text);
             helper.setText("<html><body>" +
                     "Активируйте имейл по " +
-                    "<a href = \"localhost\\active\\"+token+"\" >ссылке </a></br>"+
+                    "<a href = \"http://localhost/active/"+email + "/"+ token+"\" >ссылке </a></br>"+
                      "<img src='cid:identity'></body></html>",true);
             //FileSystemResource res = new FileSystemResource(new File("C:\\Temp\\Identity-vs-Verification.jpeg"));
             helper.addInline("identity", new ClassPathResource("img/Identity-vs-Verification.jpeg"));

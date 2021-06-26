@@ -77,7 +77,7 @@ public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailSe
             return this;
         }
         public Builder sendMail() {
-            if (validationEmail.isToken) {validationEmail.mailService.Send( validationEmail.getEmail(), validationEmail.getTokenOrCode(), "Активация имейла");}
+            if (validationEmail.isToken) {validationEmail.mailService.Send( validationEmail.getEmail(),validationEmail.getEmail(), validationEmail.getTokenOrCode(), "Активация имейла");}
             return this;
         }
         public ValidationEmail Build(){
