@@ -4,5 +4,5 @@ import com.kk.validation.exceptions.ExceptionTypeToken;
 
 @FunctionalInterface
 public interface GeneratedToken {
-    String get(String type) throws ExceptionTypeToken;
+    String get(boolean type);
 }
