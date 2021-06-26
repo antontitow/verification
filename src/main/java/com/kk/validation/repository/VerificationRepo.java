@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VerificationRepo extends CrudRepository<Verification,Integer> {
+    @Query("select * from ")
     Verification findByEmail(String email);
     Verification findByTokenCode(String token);
 
