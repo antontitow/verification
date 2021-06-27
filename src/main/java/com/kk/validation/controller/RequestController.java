@@ -2,6 +2,7 @@ package com.kk.validation.controller;
 
 import com.kk.validation.domain.GenerationRequest;
 import com.kk.validation.domain.Verification;
+import com.kk.validation.exceptions.ExceptionGenerationToken;
 import com.kk.validation.exceptions.ExceptionNotValidEmail;
 import com.kk.validation.exceptions.ExceptionTypeToken;
 import com.kk.validation.repository.VerificationRepo;
@@ -53,6 +54,7 @@ public class RequestController {
                 .validationEmail()
                 .isTokenOrCode(generationRequest.getTokenType())
                 .generateTokenOrCode()
+                .existTokeninDB()
                 .saveEmailAndTokenCode()
                 .sendMail()
                 .Build();
@@ -60,7 +62,9 @@ public class RequestController {
         }catch (ExceptionNotValidEmail ex){
             return new ResponseEntity("ExceptionNotValidEmail",HttpStatus.BAD_REQUEST);
         }catch (ExceptionTypeToken ex){
-            return new ResponseEntity("ExceptionTypeToken",HttpStatus.BAD_REQUEST);}
+            return new ResponseEntity("ExceptionTypeToken",HttpStatus.BAD_REQUEST);
+        }catch (ExceptionGenerationToken ex){
+            return new ResponseEntity("ExceptionDuplicateToken",HttpStatus.BAD_REQUEST);}
     }
 
     //через RequestParam

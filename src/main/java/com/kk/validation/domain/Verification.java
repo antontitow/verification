@@ -16,27 +16,11 @@ public class Verification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
-    public String getTokenCode() {
-        return tokenCode;
-    }
-
-    public void setTokenCode(String tokenCode) {
-        this.tokenCode = tokenCode;
-    }
-
     private String tokenCode;
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     private boolean active;
-
-    private String email;
+    private boolean revision;
     @NonNull
     private String dateCreate;
-
 
     public Verification(){}
     public Verification(String email,String tokenCode){
@@ -46,6 +30,28 @@ public class Verification {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formatDate);
         this.dateCreate = simpleDateFormat.format(dateCreate);
     }
+
+    public String getTokenCode() {
+        return tokenCode;
+    }
+
+    public void setTokenCode(String tokenCode) {
+        this.tokenCode = tokenCode;
+    }
+
+    public void setActive() {
+        this.active = true;
+    }
+
+    public boolean isRevision() {
+        return revision;
+    }
+
+    public void setRevision() {
+        this.revision = revision;
+    }
+
+    private String email;
 
     public String getEmail() {
         return email;

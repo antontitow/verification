@@ -1,11 +1,11 @@
 package com.kk.validation.service;
 
+import com.kk.validation.exceptions.ExceptionGenerationToken;
 import com.kk.validation.exceptions.ExceptionTypeToken;
 import com.kk.validation.exceptions.ExceptionNotValidEmail;
+import com.kk.validation.repository.VerificationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.mail.MessagingException;
 import java.util.regex.Pattern;
 
 @Service
@@ -14,6 +14,8 @@ public class ValidationEmail {
     private final TokenGen generation;
     private final SQLiteSrv sqLite;
     private final MailSenderSrv mailService;
+    @Autowired
+    VerificationRepo verificationEntity;
 
 @Autowired
 public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailService){
@@ -21,6 +23,21 @@ public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailSe
     this.sqLite = sqLite;
     this.mailService = mailService;
 }
+
+    private String email;
+    private boolean emailValid;
+    private boolean emailSend;
+    private boolean isToken;
+    private String tokenOrCode;
+    private boolean tokenOrCodeSave;
+
+    public void setTokenOrCode(String tokenOrCode) {
+        this.tokenOrCode = tokenOrCode;
+    }
+
+    public String getTokenOrCode() {
+        return tokenOrCode;
+    }
 
     public String getEmail() {
         return email;
@@ -30,21 +47,7 @@ public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailSe
         this.email = email;
     }
 
-    private String email;
-    private boolean emailValid;
-    private boolean emailSend;
-    private boolean isToken;
 
-    public void setTokenOrCode(String tokenOrCode) {
-        this.tokenOrCode = tokenOrCode;
-    }
-
-    private String tokenOrCode;
-    private boolean tokenOrCodeSave;
-
-    public String getTokenOrCode() {
-        return tokenOrCode;
-    }
 
     public class Builder {
         private final ValidationEmail validationEmail;
@@ -79,6 +82,10 @@ public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailSe
         public Builder sendMail() {
             if (validationEmail.isToken) {validationEmail.mailService.Send( validationEmail.getEmail(),validationEmail.getEmail(), validationEmail.getTokenOrCode(), "Активация имейла");}
             return this;
+        }
+        public Builder existTokeninDB() throws ExceptionGenerationToken {
+            if (verificationEntity.findByTokenCode(validationEmail.getTokenOrCode()) == null){
+            return this;}else {throw new ExceptionGenerationToken();}
         }
         public ValidationEmail Build(){
             return validationEmail;
