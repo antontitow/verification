@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+
 @RestController
 public class RequestController {
     private final TokenGen generation;
@@ -59,7 +61,7 @@ public class RequestController {
     }
 
     @GetMapping("/activation/{email}/{token}")
-    public ResponseEntity<String> activation(@PathVariable String email,@PathVariable String token){
+    public ResponseEntity<String> activation(@PathVariable String email,@PathVariable String token) throws ParseException {
         Verification row;
         try {
             row  = verificationEntity.findByEmailAndTokenCode(email,token);
@@ -68,10 +70,15 @@ public class RequestController {
             return new ResponseEntity("Error authentification",HttpStatus.BAD_REQUEST);
         }
             if (row.getTokenCode().equals(token)){
+                if(row.isTokenExpired()){
+                    row.setRevision();
+                    verificationEntity.save(row);
+                    return new ResponseEntity("Токен просрочен",HttpStatus.BAD_REQUEST);
+                }else{
                 row.setActive();
                 row.setRevision();
                 verificationEntity.save(row);
-                return new ResponseEntity("Почтовый ящик проверен",HttpStatus.OK);
+                return new ResponseEntity("Почтовый ящик проверен",HttpStatus.OK);}
             }else{row.setRevision();
                 verificationEntity.save(row);
                 return new ResponseEntity("Error authentification",HttpStatus.BAD_REQUEST);

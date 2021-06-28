@@ -81,7 +81,7 @@ public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailSe
             return this;
         }
         public Builder sendMail() {
-            if (validationEmail.isToken) {validationEmail.mailService.Send( validationEmail.getEmail(),validationEmail.getEmail(), validationEmail.getTokenOrCode(), "Активация имейла");}
+            validationEmail.mailService.Send( validationEmail.getEmail(),validationEmail.getEmail(), validationEmail.getTokenOrCode(), "Активация имейла");
             return this;
         }
         public Builder existTokeninDB() throws ExceptionGenerationToken {

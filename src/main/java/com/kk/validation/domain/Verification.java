@@ -4,12 +4,17 @@ import org.hibernate.annotations.Type;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @Entity
 public class Verification {
-    private static final String formatDate = "yyyy.MM.dd";
+    // Формат хранимой даты
+    private static final String formatDate = "dd.MM.yyyy";
+    // Период жизни токена 7 дней
+    private static final int lifeTime = 7;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,6 +33,19 @@ public class Verification {
         Date dateCreate = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formatDate);
         this.dateCreate = simpleDateFormat.format(dateCreate);
+    }
+    public boolean isTokenExpired() throws ParseException {
+        Date now = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formatDate);
+        Date nowFormat = simpleDateFormat.parse(simpleDateFormat.format(now));
+
+        Date dateCreateDate = simpleDateFormat.parse(this.dateCreate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateCreateDate);
+        calendar.add(Calendar.DAY_OF_MONTH,lifeTime);
+        Date dateDelay = calendar.getTime();
+        if (nowFormat.after(dateDelay)){ return true;}
+        return false;
     }
 
     public String getTokenCode() {
