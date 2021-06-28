@@ -59,14 +59,15 @@ public class RequestController {
     }
 
     @GetMapping("/activation/{email}/{tokenType}")
-    public ResponseEntity<String> activation(@PathVariable String email,@PathVariable String tokenType){
+    public ResponseEntity<String> activation(@PathVariable String email,@PathVariable String token){
         Verification row;
         try {
             row  = verificationEntity.findByEmail(email);
+            if (row.equals(null)) throw new NullPointerException();
         }catch (NullPointerException npex){
             return new ResponseEntity("Error authentification",HttpStatus.BAD_REQUEST);
         }
-            if (row.getTokenCode().equals(tokenType)){
+            if (row.getTokenCode().equals(token)){
                 row.setActive();
                 row.setRevision();
                 verificationEntity.save(row);
