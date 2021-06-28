@@ -58,7 +58,7 @@ public class RequestController {
         }
     }
 
-    @GetMapping("/activation/{email}/{tokenType}")
+    @GetMapping("/activation/{email}/{token}")
     public ResponseEntity<String> activation(@PathVariable String email,@PathVariable String token){
         Verification row;
         try {
