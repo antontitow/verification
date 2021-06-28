@@ -76,6 +76,6 @@ public class RequestController {
                 verificationEntity.save(row);
                 return new ResponseEntity("Error authentification",HttpStatus.BAD_REQUEST);
             }
-//              return new ResponseEntity("Error type of command",HttpStatus.BAD_REQUEST);
+//          return new ResponseEntity("Error type of command",HttpStatus.BAD_REQUEST);
     }
 }
