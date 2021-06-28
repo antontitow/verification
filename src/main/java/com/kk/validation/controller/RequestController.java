@@ -62,7 +62,7 @@ public class RequestController {
     public ResponseEntity<String> activation(@PathVariable String email,@PathVariable String token){
         Verification row;
         try {
-            row  = verificationEntity.findByEmail(email);
+            row  = verificationEntity.findByEmailAndTokenCode(email,token);
             if (row.equals(null)) throw new NullPointerException();
         }catch (NullPointerException npex){
             return new ResponseEntity("Error authentification",HttpStatus.BAD_REQUEST);
