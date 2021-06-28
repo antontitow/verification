@@ -71,7 +71,7 @@ public class RequestController {
                 row.setActive();
                 row.setRevision();
                 verificationEntity.save(row);
-                return new ResponseEntity("Код подтвержден",HttpStatus.OK);
+                return new ResponseEntity("Почтовый ящик проверен",HttpStatus.OK);
             }else{row.setRevision();
                 verificationEntity.save(row);
                 return new ResponseEntity("Error authentification",HttpStatus.BAD_REQUEST);
