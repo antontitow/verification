@@ -7,8 +7,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VerificationRepo extends CrudRepository<Verification,Integer> {
-    @Query("select * from validation where email = ?1 and active = 0 and validation = 0")
+    @Query(value="select * from verification where email = ?1 and active = 0 and revision = 0",nativeQuery = true)
     Verification findByEmail(String email);
     Verification findByTokenCode(String token);
+    //void setUserParameters();
 
 }

@@ -1,11 +1,9 @@
 package com.kk.validation.domain;
 
+import org.hibernate.annotations.Type;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,9 +14,10 @@ public class Verification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    private String email;
     private String tokenCode;
-    private boolean active;
-    private boolean revision;
+    private String active ="0";
+    private String revision= "0";
     @NonNull
     private String dateCreate;
 
@@ -40,18 +39,17 @@ public class Verification {
     }
 
     public void setActive() {
-        this.active = true;
+        this.active = "1";
     }
 
-    public boolean isRevision() {
+    public String isRevision() {
         return revision;
     }
 
     public void setRevision() {
-        this.revision = revision;
+        this.revision = "1";
     }
 
-    private String email;
 
     public String getEmail() {
         return email;

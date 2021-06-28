@@ -1,5 +1,6 @@
 package com.kk.validation.service;
 
+import com.kk.validation.domain.Verification;
 import com.kk.validation.exceptions.ExceptionGenerationToken;
 import com.kk.validation.exceptions.ExceptionTypeToken;
 import com.kk.validation.exceptions.ExceptionNotValidEmail;
@@ -84,8 +85,12 @@ public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailSe
             return this;
         }
         public Builder existTokeninDB() throws ExceptionGenerationToken {
-            if (verificationEntity.findByTokenCode(validationEmail.getTokenOrCode()) == null){
-            return this;}else {throw new ExceptionGenerationToken();}
+            try {
+                Verification verification =  verificationEntity.findByTokenCode(validationEmail.getTokenOrCode());
+            }catch (NullPointerException npex){
+                return this;
+            }
+            throw new ExceptionGenerationToken();
         }
         public ValidationEmail Build(){
             return validationEmail;

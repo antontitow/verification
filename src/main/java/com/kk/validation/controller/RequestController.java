@@ -35,16 +35,6 @@ public class RequestController {
         return ResponseEntity.ok("OK!");
     }
 
-    @GetMapping("/activation/{mail}/{token}")
-    public ResponseEntity<String> activation(@PathVariable String mail,@PathVariable String token){
-//        Verification verification = verificationEntity.findByTokenCode(token));
-//         if (verificationEntity.findByEmail(mail).equals(verification){
-//            verification.setActive();
-        if (verificationEntity.findByEmail(mail).equals(verificationEntity.findByTokenCode(token))){
-        return ResponseEntity.ok("OK!");}
-         return new ResponseEntity<>("Имейл не подтвержден", HttpStatus.BAD_REQUEST);
-    }
-
     //через JSON
     @PostMapping(path = "/generate", consumes = "application/json", produces = "application/json")
     public ResponseEntity<String> generationToken2(@RequestBody GenerationRequest generationRequest) {
@@ -64,13 +54,27 @@ public class RequestController {
         }catch (ExceptionTypeToken ex){
             return new ResponseEntity("ExceptionTypeToken",HttpStatus.BAD_REQUEST);
         }catch (ExceptionGenerationToken ex){
-            return new ResponseEntity("ExceptionDuplicateToken",HttpStatus.BAD_REQUEST);}
+            return new ResponseEntity("ExceptionDuplicateToken",HttpStatus.BAD_REQUEST);
+        }
     }
 
-    //через RequestParam
-    @PostMapping("/generate")
-    public ResponseEntity<String> generationToken(@RequestParam("tokenType") String tokenType, @RequestParam("email") String email){
-        return new ResponseEntity("all right",HttpStatus.OK);
+    @GetMapping("/activation/{email}/{tokenType}")
+    public ResponseEntity<String> activation(@PathVariable String email,@PathVariable String tokenType){
+        Verification row;
+        try {
+            row  = verificationEntity.findByEmail(email);
+        }catch (NullPointerException npex){
+            return new ResponseEntity("Error authentification",HttpStatus.BAD_REQUEST);
+        }
+            if (row.getTokenCode().equals(tokenType)){
+                row.setActive();
+                row.setRevision();
+                verificationEntity.save(row);
+                return new ResponseEntity("Код подтвержден",HttpStatus.OK);
+            }else{row.setRevision();
+                verificationEntity.save(row);
+                return new ResponseEntity("Error authentification",HttpStatus.BAD_REQUEST);
+            }
 //              return new ResponseEntity("Error type of command",HttpStatus.BAD_REQUEST);
     }
 }
