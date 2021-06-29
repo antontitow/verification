@@ -1,12 +1,13 @@
 package com.kk.validation.domain;
 
+import lombok.NoArgsConstructor;
+
 /**
  * @author Titov 29.06.2021
  * GenerationRequest
  */
+@NoArgsConstructor
 public class GenerationRequest {
-    protected GenerationRequest() {
-    }
 
     private String tokenType;
     private String email;

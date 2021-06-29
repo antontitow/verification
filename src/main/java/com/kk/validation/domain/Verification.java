@@ -1,5 +1,6 @@
 package com.kk.validation.domain;
 
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.springframework.lang.NonNull;
 
@@ -14,6 +15,7 @@ import java.util.Date;
  * Verification
  */
 @Entity
+@NoArgsConstructor
 public class Verification {
     // Формат хранимой даты
     private static final String formatDate = "dd.MM.yyyy";
@@ -29,9 +31,6 @@ public class Verification {
     private String revision = "0";
     @NonNull
     private String dateCreate;
-
-    public Verification() {
-    }
 
     /**
      * Verification ; constructor
