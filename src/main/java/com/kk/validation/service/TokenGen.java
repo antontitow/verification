@@ -10,22 +10,30 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
 
+/**
+ * @author Titov 29.06.2021
+ * TokenGen
+ */
 @Service
 public class TokenGen {
     @Autowired
     private TokenGenConfig tokenGenConfig;
-
-    public GeneratedToken token = (t)->{
-        if (t){
+    /**
+     * token; generate token or code
+     *
+     * @param t
+     */
+    public GeneratedToken token = (t) -> {
+        if (t) {
             SecureRandom secureRandom = new SecureRandom(); //threadsafe
             Base64.Encoder base64Encoder = Base64.getUrlEncoder();
             byte[] randomBytes = new byte[tokenGenConfig.getLengthToken()];
             secureRandom.nextBytes(randomBytes);
-            return base64Encoder.encodeToString(randomBytes);}
-        else {
+            return base64Encoder.encodeToString(randomBytes);
+        } else {
             StringBuilder STR = new StringBuilder();
-            int[] iArr = new Random().ints(tokenGenConfig.getLengthCode(),0,9).toArray();
-            Arrays.stream(iArr).forEach((i)->STR.append(i));
+            int[] iArr = new Random().ints(tokenGenConfig.getLengthCode(), 0, 9).toArray();
+            Arrays.stream(iArr).forEach((i) -> STR.append(i));
             return STR.toString();
         }
     };

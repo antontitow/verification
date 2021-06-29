@@ -9,6 +9,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * @author Titov 29.06.2021
+ * Verification
+ */
 @Entity
 public class Verification {
     // Формат хранимой даты
@@ -21,19 +25,34 @@ public class Verification {
     private Integer id;
     private String email;
     private String tokenCode;
-    private String active ="0";
-    private String revision= "0";
+    private String active = "0";
+    private String revision = "0";
     @NonNull
     private String dateCreate;
 
-    public Verification(){}
-    public Verification(String email,String tokenCode){
+    public Verification() {
+    }
+
+    /**
+     * Verification ; constructor
+     *
+     * @param email
+     * @param tokenCode
+     */
+    public Verification(String email, String tokenCode) {
         this.tokenCode = tokenCode;
         this.email = email;
         Date dateCreate = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formatDate);
         this.dateCreate = simpleDateFormat.format(dateCreate);
     }
+
+    /**
+     * isTokenExpired
+     *
+     * @return is token or code Expired
+     * @throws ParseException
+     */
     public boolean isTokenExpired() throws ParseException {
         Date now = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formatDate);
@@ -42,37 +61,69 @@ public class Verification {
         Date dateCreateDate = simpleDateFormat.parse(this.dateCreate);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateCreateDate);
-        calendar.add(Calendar.DAY_OF_MONTH,lifeTime);
+        calendar.add(Calendar.DAY_OF_MONTH, lifeTime);
         Date dateDelay = calendar.getTime();
-        if (nowFormat.after(dateDelay)){ return true;}
+        if (nowFormat.after(dateDelay)) {
+            return true;
+        }
         return false;
     }
 
+    /**
+     * getTokenCode
+     *
+     * @return String
+     */
     public String getTokenCode() {
         return tokenCode;
     }
 
+    /**
+     * setTokenCode
+     *
+     * @param tokenCode
+     */
     public void setTokenCode(String tokenCode) {
         this.tokenCode = tokenCode;
     }
 
+    /**
+     * setActive
+     */
     public void setActive() {
         this.active = "1";
     }
 
+    /**
+     * isRevision
+     *
+     * @return is token checked
+     */
     public String isRevision() {
         return revision;
     }
 
+    /**
+     * setRevision ;marked token as checked
+     */
     public void setRevision() {
         this.revision = "1";
     }
 
-
+    /**
+     * getEmail
+     *
+     * @return email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * setEmail
+     *
+     * @param email
+     */
     public void setEmail(String email) {
         this.email = email;
     }

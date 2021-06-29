@@ -10,8 +10,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
+
+/**
+ * @author Titov 29.06.2021
+ * MailConfig
+ */
 @Configuration
-@ConfigurationProperties(prefix ="mail.config")
+@ConfigurationProperties(prefix = "mail.config")
 @Setter
 @Getter
 public class MailConfig {
@@ -21,8 +26,14 @@ public class MailConfig {
     private String protocol;
     private int port;
     private String debug;
+
+    /**
+     * getMailSender
+     *
+     * @return JavaMailSenderImpl
+     */
     @Bean
-    public JavaMailSenderImpl getMailSender(){
+    public JavaMailSenderImpl getMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setHost(host);
         javaMailSender.setPort(port);

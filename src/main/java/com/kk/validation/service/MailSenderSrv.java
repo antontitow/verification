@@ -14,6 +14,10 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * @author Titov 29.06.2021
+ * MailSenderSrv
+ */
 @Service
 public class MailSenderSrv {
     private final JavaMailSenderImpl mailSender;
@@ -25,6 +29,14 @@ public class MailSenderSrv {
         this.mailConfig = mailConfig;
     }
 
+    /**
+     * Send; send email
+     *
+     * @param to
+     * @param email
+     * @param token
+     * @param text
+     */
     public void Send(String to, String email, String token, String text) {
         // через SimpleMailMessage
 //        SimpleMailMessage msg = new SimpleMailMessage();
@@ -45,8 +57,8 @@ public class MailSenderSrv {
             helper.setSubject(text);
             helper.setText("<html><body>" +
                     "Активируйте имейл по " +
-                    "<a href = \"http://localhost/activation/"+email + "/"+ token+"\" >ссылке </a></br></br>"+
-                     "<img src='cid:identity'></body></html>",true);
+                    "<a href = \"http://localhost/activation/" + email + "/" + token + "\" >ссылке </a></br></br>" +
+                    "<img src='cid:identity'></body></html>", true);
             //FileSystemResource res = new FileSystemResource(new File("C:\\Temp\\Identity-vs-Verification.jpeg"));
             helper.addInline("identity", new ClassPathResource("img/Identity-vs-Verification.jpeg"));
             mailSender.send(message);

@@ -10,6 +10,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
+/**
+ * @author Titov 29.06.2021
+ * SwaggerConfig
+ */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
@@ -21,7 +25,4 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.basePackage("com.kk.validation.controller"))
                 .paths(regex("/.*")).build();
     }
-
-
-
 }

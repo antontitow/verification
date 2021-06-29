@@ -5,6 +5,10 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author Titov 29.06.2021
+ * TokenGenConfig
+ */
 @Configuration
 @ConfigurationProperties(prefix = "tokengen")
 @Setter

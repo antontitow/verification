@@ -1,7 +1,11 @@
 package com.kk.validation.exceptions;
 
-public class ExceptionTypeToken extends Exception{
-    public ExceptionTypeToken(){
+/**
+ * @author Titov 29.06.2021
+ * ExceptionTypeToken
+ */
+public class ExceptionTypeToken extends Exception {
+    public ExceptionTypeToken() {
         super("Error of type token");
     }
 }

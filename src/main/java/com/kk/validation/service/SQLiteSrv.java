@@ -5,12 +5,24 @@ import com.kk.validation.repository.VerificationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author Titov 29.06.2021
+ * SQLiteSrv
+ */
 @Service
 public class SQLiteSrv {
     @Autowired
     VerificationRepo verificationEntity;
-    public boolean saveMail(String mail,String tokenOrCode){
-        verificationEntity.save(new Verification(mail,tokenOrCode));
+
+    /**
+     * saveMail
+     *
+     * @param mail
+     * @param tokenOrCode
+     * @return
+     */
+    public boolean saveMail(String mail, String tokenOrCode) {
+        verificationEntity.save(new Verification(mail, tokenOrCode));
         return true;
     }
 }

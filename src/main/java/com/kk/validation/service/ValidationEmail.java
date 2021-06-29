@@ -7,7 +7,13 @@ import com.kk.validation.exceptions.ExceptionNotValidEmail;
 import com.kk.validation.repository.VerificationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.regex.Pattern;
+
+/**
+ * @author Titov 29.06.2021
+ * ValidationEmail
+ */
 
 @Service
 public class ValidationEmail {
@@ -18,12 +24,17 @@ public class ValidationEmail {
     @Autowired
     VerificationRepo verificationEntity;
 
-@Autowired
-public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailService){
-    this.generation = generation;
-    this.sqLite = sqLite;
-    this.mailService = mailService;
-}
+    /**
+     * @param generation
+     * @param sqLite
+     * @param mailService
+     */
+    @Autowired
+    public ValidationEmail(TokenGen generation, SQLiteSrv sqLite, MailSenderSrv mailService) {
+        this.generation = generation;
+        this.sqLite = sqLite;
+        this.mailService = mailService;
+    }
 
     private String email;
     private boolean emailValid;
@@ -32,67 +43,148 @@ public ValidationEmail(TokenGen generation,SQLiteSrv sqLite,MailSenderSrv mailSe
     private String tokenOrCode;
     private boolean tokenOrCodeSave;
 
+    /**
+     * setTokenOrCode
+     *
+     * @param tokenOrCode
+     */
     public void setTokenOrCode(String tokenOrCode) {
         this.tokenOrCode = tokenOrCode;
     }
 
+    /**
+     * getTokenOrCode
+     *
+     * @return is Token or Code
+     */
     public String getTokenOrCode() {
         return tokenOrCode;
     }
 
+    /**
+     * getEmail
+     *
+     * @return email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * setEmail
+     *
+     * @param email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
-
-
+    /**
+     * Builder
+     * configures the ValidationEmail bean
+     */
     public class Builder {
         private final ValidationEmail validationEmail;
 
-        public Builder(){validationEmail = new ValidationEmail(generation,sqLite,mailService);}
+        /**
+         * Builder
+         */
+        public Builder() {
+            validationEmail = new ValidationEmail(generation, sqLite, mailService);
+        }
 
-        public Builder setEmail(String email){ validationEmail.email = email; return this;}
+        /**
+         * @param email
+         * @return Builder
+         */
+        public Builder setEmail(String email) {
+            validationEmail.email = email;
+            return this;
+        }
 
+        /**
+         * @return Builder
+         * @throws ExceptionNotValidEmail
+         */
         public Builder validationEmail() throws ExceptionNotValidEmail {
             String regex = "^(.+)@(.+)$";
             Pattern pattern = Pattern.compile(regex);
-            if (pattern.matcher(validationEmail.email).matches())
-            {validationEmail.emailValid = true; return this; }
-                else {throw new ExceptionNotValidEmail();}
+            if (pattern.matcher(validationEmail.email).matches()) {
+                validationEmail.emailValid = true;
+                return this;
+            } else {
+                throw new ExceptionNotValidEmail();
             }
-
-        public Builder isTokenOrCode(String tokenOrCode) throws ExceptionTypeToken {
-            if (tokenOrCode.equals("token"))
-                {validationEmail.isToken = true; return this; }
-            else if(tokenOrCode.equals("code")){validationEmail.isToken = false; return this; }
-            else {throw new ExceptionTypeToken();}
         }
 
-        public Builder generateTokenOrCode(){
+        /**
+         * @param tokenOrCode
+         * @return Builder
+         * @throws ExceptionTypeToken
+         */
+        public Builder isTokenOrCode(String tokenOrCode) throws ExceptionTypeToken {
+            if (tokenOrCode.equals("token")) {
+                validationEmail.isToken = true;
+                return this;
+            } else if (tokenOrCode.equals("code")) {
+                validationEmail.isToken = false;
+                return this;
+            } else {
+                throw new ExceptionTypeToken();
+            }
+        }
+
+        /**
+         * generateTokenOrCode
+         *
+         * @return Builder
+         */
+        public Builder generateTokenOrCode() {
             validationEmail.tokenOrCode = generation.token.get(validationEmail.isToken);
             return this;
         }
-        public Builder saveEmailAndTokenCode(){
-            validationEmail.sqLite.saveMail(validationEmail.getEmail(),validationEmail.getTokenOrCode());
+
+        /**
+         * saveEmailAndTokenCode
+         *
+         * @return Builder
+         */
+        public Builder saveEmailAndTokenCode() {
+            validationEmail.sqLite.saveMail(validationEmail.getEmail(), validationEmail.getTokenOrCode());
             return this;
         }
+
+        /**
+         * sendMail
+         *
+         * @return Builder
+         */
         public Builder sendMail() {
-            validationEmail.mailService.Send( validationEmail.getEmail(),validationEmail.getEmail(), validationEmail.getTokenOrCode(), "Активация имейла");
+            validationEmail.mailService.Send(validationEmail.getEmail(), validationEmail.getEmail(), validationEmail.getTokenOrCode(), "Активация имейла");
             return this;
         }
+
+        /**
+         * existTokeninDB
+         *
+         * @return Builder
+         * @throws ExceptionGenerationToken
+         */
         public Builder existTokeninDB() throws ExceptionGenerationToken {
             try {
-                Verification verification =  verificationEntity.findByTokenCode(validationEmail.getTokenOrCode());
-            }catch (NullPointerException npex){
+                Verification verification = verificationEntity.findByTokenCode(validationEmail.getTokenOrCode());
+            } catch (NullPointerException npex) {
                 return this;
             }
             throw new ExceptionGenerationToken();
         }
-        public ValidationEmail Build(){
+
+        /**
+         * Build
+         *
+         * @return ValidationEmail
+         */
+        public ValidationEmail Build() {
             return validationEmail;
         }
     }

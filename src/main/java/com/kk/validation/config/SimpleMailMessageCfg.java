@@ -6,6 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
 
+/**
+ * @author Titov 29.06.2021
+ * SimpleMailMessageCfg
+ */
 @Configuration
 @ConfigurationProperties(prefix = "simple.mail")
 @Setter
@@ -13,7 +17,13 @@ import org.springframework.mail.SimpleMailMessage;
 public class SimpleMailMessageCfg {
     private String from;
     private String subject;
-    public SimpleMailMessage getSimpleMailMessage(){
+
+    /**
+     * getSimpleMailMessage
+     *
+     * @return SimpleMailMessage
+     */
+    public SimpleMailMessage getSimpleMailMessage() {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(from);
         simpleMailMessage.setSubject(subject);
