@@ -3,12 +3,10 @@ package com.kk.validation.service;
 import com.kk.validation.domain.Verification;
 import com.kk.validation.exceptions.ExceptionGenerationToken;
 import com.kk.validation.exceptions.ExceptionTypeToken;
-import com.kk.validation.exceptions.ExceptionNotValidEmail;
 import com.kk.validation.repository.VerificationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.regex.Pattern;
 
 /**
  * @author Titov 29.06.2021
@@ -41,7 +39,25 @@ public class ValidationEmail {
     private boolean emailSend;
     private boolean isToken;
     private String tokenOrCode;
-    private boolean tokenOrCodeSave;
+    private Integer id;
+
+    /**
+     * setId
+     *
+     * @param id
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * getId
+     *
+     * @return
+     */
+    public Integer getId() {
+        return id;
+    }
 
     /**
      * setTokenOrCode
@@ -103,21 +119,6 @@ public class ValidationEmail {
         }
 
         /**
-         * @return Builder
-         * @throws ExceptionNotValidEmail
-         */
-        public Builder validationEmail() throws ExceptionNotValidEmail {
-            String regex = "^(.+)@(.+)$";
-            Pattern pattern = Pattern.compile(regex);
-            if (pattern.matcher(validationEmail.email).matches()) {
-                validationEmail.emailValid = true;
-                return this;
-            } else {
-                throw new ExceptionNotValidEmail();
-            }
-        }
-
-        /**
          * @param tokenOrCode
          * @return Builder
          * @throws ExceptionTypeToken
@@ -150,7 +151,8 @@ public class ValidationEmail {
          * @return Builder
          */
         public Builder saveEmailAndTokenCode() {
-            validationEmail.sqLite.saveMail(validationEmail.getEmail(), validationEmail.getTokenOrCode());
+            Verification verification = validationEmail.sqLite.saveMail(validationEmail.getEmail(), validationEmail.getTokenOrCode());
+            validationEmail.id = verification.getId();
             return this;
         }
 

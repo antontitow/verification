@@ -21,8 +21,7 @@ public class SQLiteSrv {
      * @param tokenOrCode
      * @return
      */
-    public boolean saveMail(String mail, String tokenOrCode) {
-        verificationEntity.save(new Verification(mail, tokenOrCode));
-        return true;
+    public Verification saveMail(String mail, String tokenOrCode) {
+        return verificationEntity.save(new Verification(mail, tokenOrCode));
     }
 }

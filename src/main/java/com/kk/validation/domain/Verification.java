@@ -28,9 +28,27 @@ public class Verification {
     private String email;
     private String tokenCode;
     private String active = "0";
-    private String revision = "0";
+    private String expire = "0";
     @NonNull
     private String dateCreate;
+
+    /**
+     * getId
+     *
+     * @return
+     */
+    public Integer getId() {
+        return id;
+    }
+
+    /**
+     * getActive
+     *
+     * @return active
+     */
+    public String getActive() {
+        return active;
+    }
 
     /**
      * Verification ; constructor
@@ -94,19 +112,19 @@ public class Verification {
     }
 
     /**
-     * isRevision
+     * isExpire
      *
      * @return is token checked
      */
-    public String isRevision() {
-        return revision;
+    public String getExpire() {
+        return expire;
     }
 
     /**
-     * setRevision ;marked token as checked
+     * setExpire ;marked token as expired
      */
-    public void setRevision() {
-        this.revision = "1";
+    public void setExpire() {
+        this.expire = "1";
     }
 
     /**

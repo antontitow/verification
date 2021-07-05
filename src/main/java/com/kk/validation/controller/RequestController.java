@@ -2,20 +2,19 @@ package com.kk.validation.controller;
 
 import com.kk.validation.domain.GenerationRequest;
 import com.kk.validation.domain.Verification;
-import com.kk.validation.exceptions.ExceptionGenerationToken;
-import com.kk.validation.exceptions.ExceptionNotValidEmail;
 import com.kk.validation.exceptions.ExceptionTypeToken;
 import com.kk.validation.repository.VerificationRepo;
-import com.kk.validation.service.MailSenderSrv;
-import com.kk.validation.service.SQLiteSrv;
-import com.kk.validation.service.TokenGen;
-import com.kk.validation.service.ValidationEmail;
+import com.kk.validation.service.*;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.text.ParseException;
+import java.util.Optional;
 
 /**
  * @author Titov 29.06.2021
@@ -45,42 +44,146 @@ public class RequestController {
     }
 
     /**
-     * tes
+     * check
      *
      * @return responseEntity
      */
-    @GetMapping("/test")
-    public ResponseEntity<String> tes() {
-        return ResponseEntity.ok("OK!");
+    @SneakyThrows
+    @GetMapping("/check/{id}")
+    public ResponseEntity<String> check(@PathVariable Integer id) throws ParseException {
+        Optional<Verification> optionalVerification = verificationEntity.findById(id);
+        GenerationRequest generationRequest = new GenerationRequest();
+        if (optionalVerification.equals(null)) {
+            generationRequest.setStatus("4");
+            generationRequest.setDescription("ID not found.");
+        } else {
+            Verification verification = optionalVerification.get();
+            generationRequest.setEmail(verification.getEmail());
+            if (verification.getExpire().equals("0")) {
+                if (verification.isTokenExpired() == true) {
+                    verification.setExpire();
+                    verificationEntity.save(verification);
+                    try {
+                        verification = verificationEntity.findByEmail(verification.getEmail());
+                        if (verification.getActive().equals("1")) {
+                            generationRequest.setStatus("5");
+                            generationRequest.setDescription("New ID. Email confirm.");
+                            generationRequest.setId(verification.getId());
+                        } else {
+                            generationRequest.setStatus("6");
+                            generationRequest.setDescription("New ID. Email confirmation pending");
+                            generationRequest.setId(verification.getId());
+                        }
+                    } catch (NullPointerException npex) {
+                        generationRequest.setStatus("4");
+                        generationRequest.setDescription("ID not found.");
+                    }
+                } else {
+                    generationRequest.setId(id);
+                    if (verification.getActive().equals("1")) {
+                        generationRequest.setStatus("1");
+                        generationRequest.setDescription("Email confirm.");
+                    } else {
+                        generationRequest.setStatus("2");
+                        generationRequest.setDescription("Email confirmation pending.");
+                    }
+                }
+            } else {
+                try {
+                    verification = verificationEntity.findByEmail(verification.getEmail());
+                    if (verification.getActive().equals("1")) {
+                        generationRequest.setStatus("5");
+                        generationRequest.setDescription("New ID. Email confirm.");
+                        generationRequest.setId(verification.getId());
+                    } else {
+                        generationRequest.setStatus("6");
+                        generationRequest.setDescription("New ID. Email confirmation pending");
+                        generationRequest.setId(verification.getId());
+                    }
+                } catch (NullPointerException npex) {
+                    generationRequest.setStatus("4");
+                    generationRequest.setDescription("ID not found.");
+                }
+            }
+        }
+        return new ResponseEntity(generationRequest.toString(), HttpStatus.OK);
+//        try {
+//            Verification verification = verificationEntity.findByEmail(email);
+//            if (verification.equals(null)) {
+//                return new ResponseEntity("Token absent", HttpStatus.BAD_REQUEST);
+//            } else {
+//                if (verification.isTokenExpired()) {
+//                    verification.setExpire();
+//                    verificationEntity.save(verification);
+//                    return new ResponseEntity("Token expired", HttpStatus.BAD_REQUEST);
+//                }
+//                if (verification.getActive().equals("1")) {
+//                    return new ResponseEntity("Token verified", HttpStatus.OK);
+//
+//                } else {
+//                    return new ResponseEntity("Token hasn't been verified", HttpStatus.OK);
+//                }
+//            }
+//        } catch (NullPointerException ex) {
+//            return new ResponseEntity("email not found", HttpStatus.BAD_REQUEST);
+//        }
     }
 
     /**
      * generationToken2
      *
-     * @param generationRequest
+     * @param genRequest
      * @return responseEntity
      */
+
     //через JSON
+    @SneakyThrows
     @PostMapping(path = "/generate", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> generationToken2(@RequestBody GenerationRequest generationRequest) {
-        try {
+    public ResponseEntity<String> generationToken2(@RequestBody @Valid GenerationRequest genRequest) {
+        Verification verification = verificationEntity.findByEmail(genRequest.getEmail());
+        GenerationRequest generationRequest = new GenerationRequest(genRequest.getEmail());
+        if (verification != null) {
+            if (verification.isTokenExpired()) {
+                verification.setExpire();
+                verificationEntity.save(verification);
+                ValidationEmail vemail = new ValidationEmail(generation, sqLite, mailService).new Builder()
+                        .setEmail(genRequest.getEmail())
+                        .isTokenOrCode(genRequest.getTokentype())
+                        .generateTokenOrCode()
+                        .existTokeninDB()
+                        .saveEmailAndTokenCode()
+                        .sendMail()
+                        .Build();
+                //вернуть ID нового токена
+                generationRequest.setStatus("3");
+                generationRequest.setId(vemail.getId());
+                generationRequest.setDescription("A new token was generated. The previous token is deprecated");
+            } else {
+                if (verification.getActive().equals("1")) {
+                    generationRequest.setStatus("1");
+                    generationRequest.setId(verification.getId());
+                    generationRequest.setDescription("Email request already exists. Email confirm");
+                } else {
+                    generationRequest.setStatus("2");
+                    generationRequest.setId(verification.getId());
+                    generationRequest.setDescription("Email request already exists. Email confirmation pending.");
+                }
+            }
+        } else {
             ValidationEmail vemail = new ValidationEmail(generation, sqLite, mailService).new Builder()
-                    .setEmail(generationRequest.getEmail())
-                    .validationEmail()
-                    .isTokenOrCode(generationRequest.getTokenType())
+                    .setEmail(genRequest.getEmail())
+                    .isTokenOrCode(genRequest.getTokentype())
                     .generateTokenOrCode()
                     .existTokeninDB()
                     .saveEmailAndTokenCode()
                     .sendMail()
                     .Build();
-            return new ResponseEntity(vemail.getTokenOrCode(), HttpStatus.OK);
-        } catch (ExceptionNotValidEmail ex) {
-            return new ResponseEntity("ExceptionNotValidEmail", HttpStatus.BAD_REQUEST);
-        } catch (ExceptionTypeToken ex) {
-            return new ResponseEntity("ExceptionTypeToken", HttpStatus.BAD_REQUEST);
-        } catch (ExceptionGenerationToken ex) {
-            return new ResponseEntity("ExceptionDuplicateToken", HttpStatus.BAD_REQUEST);
+            //вернуть ID
+            generationRequest.setStatus("3");
+            generationRequest.setId(vemail.getId());
+            generationRequest.setDescription("A new token was generated.");
         }
+        return new ResponseEntity(generationRequest.toString(), HttpStatus.OK);
     }
 
     /**
@@ -90,30 +193,29 @@ public class RequestController {
      * @throws ParseException activation
      */
     @GetMapping("/activation/{email}/{token}")
-    public ResponseEntity<String> activation(@PathVariable String email, @PathVariable String token) throws ParseException {
-        Verification row;
+    public ResponseEntity<String> activation(@PathVariable @Email(regexp = "^([a-zA-Z0-9_\\.-]+)@([a-zA-Z0-9_\\.-]+)\\.([a-zA-Z]{2,6})$",
+            message = "email not valid") String email,
+                                             @PathVariable @Token(tokentype = {"token", "code"}, message = "not valid Token type") String token) throws ParseException {
         try {
-            row = verificationEntity.findByEmailAndTokenCode(email, token);
-            if (row.equals(null)) throw new NullPointerException();
-        } catch (NullPointerException npex) {
-            return new ResponseEntity("Error authentification", HttpStatus.BAD_REQUEST);
-        }
-        if (row.getTokenCode().equals(token)) {
-            if (row.isTokenExpired()) {
-                row.setRevision();
-                verificationEntity.save(row);
-                return new ResponseEntity("Токен просрочен", HttpStatus.BAD_REQUEST);
+            Verification row = verificationEntity.findByEmailAndTokenCode(email, token);
+            // if token expired, return error
+            if (row.getExpire().equals("1")) {
+                return new ResponseEntity("token expired", HttpStatus.BAD_REQUEST);
+                //otherwise, make a check whether the token is expired
             } else {
-                row.setActive();
-                row.setRevision();
-                verificationEntity.save(row);
-                return new ResponseEntity("Почтовый ящик проверен", HttpStatus.OK);
+                if (row.isTokenExpired()) {
+                    row.setExpire();
+                    verificationEntity.save(row);
+                    return new ResponseEntity("Token expired", HttpStatus.BAD_REQUEST);
+                }
             }
-        } else {
-            row.setRevision();
+            row.setActive();
             verificationEntity.save(row);
+            return new ResponseEntity("Почтовый ящик проверен", HttpStatus.OK);
+            //there are no emails with such a token
+        } catch (NullPointerException npex) {
+            // there are no such tokens
             return new ResponseEntity("Error authentification", HttpStatus.BAD_REQUEST);
         }
-//          return new ResponseEntity("Error type of command",HttpStatus.BAD_REQUEST);
     }
 }
