@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -47,4 +48,6 @@ public interface VerificationRepo extends CrudRepository<Verification, Integer> 
     Verification findByEmailAndTokenCode(String email, String token);
     //void setUserParameters();
 
+    @Query(value = "select * from verification where expire = 0", nativeQuery = true)
+    List<Verification> findByExpire();
 }

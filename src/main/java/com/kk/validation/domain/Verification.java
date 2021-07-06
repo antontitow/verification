@@ -29,6 +29,17 @@ public class Verification {
     private String tokenCode;
     private String active = "0";
     private String expire = "0";
+
+    /**
+     * getDateCreate
+     *
+     * @return
+     */
+    @NonNull
+    public String getDateCreate() {
+        return dateCreate;
+    }
+
     @NonNull
     private String dateCreate;
 
