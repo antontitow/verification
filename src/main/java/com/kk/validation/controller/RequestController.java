@@ -2,7 +2,6 @@ package com.kk.validation.controller;
 
 import com.kk.validation.domain.GenerationRequest;
 import com.kk.validation.domain.Verification;
-import com.kk.validation.exceptions.ExceptionTypeToken;
 import com.kk.validation.repository.VerificationRepo;
 import com.kk.validation.service.*;
 import lombok.SneakyThrows;
@@ -26,6 +25,7 @@ public class RequestController {
     private final SQLiteSrv sqLite;
     private final MailSenderSrv mailService;
     private final VerificationRepo verificationEntity;
+
 
     /**
      * RequestController
@@ -107,26 +107,6 @@ public class RequestController {
             }
         }
         return new ResponseEntity(generationRequest.toString(), HttpStatus.OK);
-//        try {
-//            Verification verification = verificationEntity.findByEmail(email);
-//            if (verification.equals(null)) {
-//                return new ResponseEntity("Token absent", HttpStatus.BAD_REQUEST);
-//            } else {
-//                if (verification.isTokenExpired()) {
-//                    verification.setExpire();
-//                    verificationEntity.save(verification);
-//                    return new ResponseEntity("Token expired", HttpStatus.BAD_REQUEST);
-//                }
-//                if (verification.getActive().equals("1")) {
-//                    return new ResponseEntity("Token verified", HttpStatus.OK);
-//
-//                } else {
-//                    return new ResponseEntity("Token hasn't been verified", HttpStatus.OK);
-//                }
-//            }
-//        } catch (NullPointerException ex) {
-//            return new ResponseEntity("email not found", HttpStatus.BAD_REQUEST);
-//        }
     }
 
     /**
@@ -135,7 +115,6 @@ public class RequestController {
      * @param genRequest
      * @return responseEntity
      */
-
     //через JSON
     @SneakyThrows
     @PostMapping(path = "/generate", consumes = "application/json", produces = "application/json")

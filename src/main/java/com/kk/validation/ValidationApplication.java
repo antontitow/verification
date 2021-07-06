@@ -14,9 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ConfigurationPropertiesScan("com.kk.validation.config")
 @EnableScheduling
 public class ValidationApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(ValidationApplication.class, args);
     }
-
 }

@@ -4,6 +4,7 @@ import com.kk.validation.domain.Verification;
 import com.kk.validation.exceptions.ExceptionGenerationToken;
 import com.kk.validation.exceptions.ExceptionTypeToken;
 import com.kk.validation.repository.VerificationRepo;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
  * @author Titov 29.06.2021
  * ValidationEmail
  */
-
+@Log4j2
 @Service
 public class ValidationEmail {
 
@@ -151,6 +152,7 @@ public class ValidationEmail {
          * @return Builder
          */
         public Builder saveEmailAndTokenCode() {
+
             Verification verification = validationEmail.sqLite.saveMail(validationEmail.getEmail(), validationEmail.getTokenOrCode());
             validationEmail.id = verification.getId();
             return this;
