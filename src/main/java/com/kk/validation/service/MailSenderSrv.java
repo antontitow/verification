@@ -1,5 +1,6 @@
 package com.kk.validation.service;
 
+import com.kk.validation.aspects.ToSlf4j;
 import com.kk.validation.config.MailConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -37,6 +38,7 @@ public class MailSenderSrv {
      * @param token
      * @param text
      */
+    @ToSlf4j
     public void Send(String to, String email, String token, String text) {
         // через SimpleMailMessage
 //        SimpleMailMessage msg = new SimpleMailMessage();
@@ -53,7 +55,7 @@ public class MailSenderSrv {
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
             helper.setFrom(mailConfig.getUsername());
-            helper.setTo(to);
+            helper.setTo(email);
             helper.setSubject(text);
             helper.setText("<html><body>" +
                     "Активируйте имейл по " +
