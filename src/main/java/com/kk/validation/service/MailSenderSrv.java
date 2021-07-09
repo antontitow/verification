@@ -59,10 +59,11 @@ public class MailSenderSrv {
             helper.setSubject(text);
             helper.setText("<html><body>" +
                     "Активируйте имейл по " +
-                    "<a href = \"http://localhost/activation/" + email + "/" + token + "\" >ссылке </a></br></br>" +
-                    "<img src='cid:identity'></body></html>", true);
+                    "<a href = \"http://" + mailConfig.getIp() + "/activation/" + email + "/" + token + "\" >ссылке </a></br></br>" +
+                    //"<img src='cid:identity'></body></html>", true);
+                    "</body></html>", true);
             //FileSystemResource res = new FileSystemResource(new File("C:\\Temp\\Identity-vs-Verification.jpeg"));
-            helper.addInline("identity", new ClassPathResource("img/Identity-vs-Verification.jpeg"));
+            //helper.addInline("identity", new ClassPathResource("img/Identity-vs-Verification.jpeg"));
             mailSender.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();

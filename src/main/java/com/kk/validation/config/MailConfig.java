@@ -26,6 +26,7 @@ public class MailConfig {
     private String protocol;
     private int port;
     private String debug;
+    private String ip;
 
     /**
      * getMailSender
